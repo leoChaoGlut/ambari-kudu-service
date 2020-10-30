@@ -31,8 +31,8 @@ class Tserver(Script):
         Execute('wget --no-check-certificate {0} -O {1}'.format(KUDU_RPM, kuduRpmPath))
         Execute('wget --no-check-certificate {0} -O {1}'.format(KUDU_TSERVER_RPM, kuduTserverRpmPath))
 
-        Execute('rpm -ivh {0}'.format(kuduRpmPath))
-        Execute('rpm -ivh {0}'.format(kuduTserverRpmPath))
+        Execute('rpm -ivh --force {0}'.format(kuduRpmPath))
+        Execute('rpm -ivh --force {0}'.format(kuduTserverRpmPath))
 
         self.configure(env)
 

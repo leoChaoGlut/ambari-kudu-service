@@ -32,8 +32,8 @@ class Master(Script):
         Execute('wget --no-check-certificate {0} -O {1}'.format(KUDU_RPM, kuduRpmPath))
         Execute('wget --no-check-certificate {0} -O {1}'.format(KUDU_MASTER_RPM, kuduMasterRpmPath))
 
-        Execute('rpm -ivh {0}'.format(kuduRpmPath))
-        Execute('rpm -ivh {0}'.format(kuduMasterRpmPath))
+        Execute('rpm -ivh --force {0}'.format(kuduRpmPath))
+        Execute('rpm -ivh --force {0}'.format(kuduMasterRpmPath))
 
         self.configure(env)
 
