@@ -56,6 +56,7 @@ class Master(Script):
     def configure(self, env):
         from params import kudu_master, master_gflagfile
         key_val_template = '{0}={1}\n'
+        export_kv_tmpl = 'export {0}={1}\n'
 
         walDir = master_gflagfile['--fs_wal_dir']
         dataDirs = master_gflagfile['--fs_data_dirs']
@@ -79,7 +80,7 @@ class Master(Script):
 
         with open('/etc/default/kudu-master', 'w') as f:
             for key, value in kudu_master.iteritems():
-                f.write(key_val_template.format(key, value))
+                f.write(export_kv_tmpl.format(key, value))
 
 
 if __name__ == '__main__':

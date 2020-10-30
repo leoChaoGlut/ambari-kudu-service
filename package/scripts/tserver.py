@@ -55,6 +55,7 @@ class Tserver(Script):
     def configure(self, env):
         from params import kudu_tserver, tserver_gflagfile
         key_val_template = '{0}={1}\n'
+        export_kv_tmpl = 'export {0}={1}\n'
 
         walDir = tserver_gflagfile['--fs_wal_dir']
         dataDirs = tserver_gflagfile['--fs_data_dirs']
@@ -78,7 +79,7 @@ class Tserver(Script):
 
         with open('/etc/default/kudu-tserver', 'w') as f:
             for key, value in kudu_tserver.iteritems():
-                f.write(key_val_template.format(key, value))
+                f.write(export_kv_tmpl.format(key, value))
 
 
 if __name__ == '__main__':
