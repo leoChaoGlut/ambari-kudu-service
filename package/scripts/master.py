@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-from resource_management.core.exceptions import ExecutionFailed, ComponentIsNotRunning
+from resource_management.core.exceptions import ExecutionFailed
 from resource_management.core.resources.system import Execute
 from resource_management.libraries.script.script import Script
 
@@ -48,10 +48,7 @@ class Master(Script):
         try:
             Execute('service kudu-master status')
         except ExecutionFailed as ef:
-            if ef.code == 3:
-                raise ComponentIsNotRunning("ComponentIsNotRunning")
-            else:
-                raise ef
+            raise ef
 
     def configure(self, env):
         from params import kudu_master, master_gflagfile
