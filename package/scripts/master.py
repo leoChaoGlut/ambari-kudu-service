@@ -18,7 +18,6 @@ from resource_management.core.resources.system import Execute
 from resource_management.libraries.script.script import Script
 
 from common import kuduHome, KUDU_RPM, KUDU_MASTER_RPM
-from params import kudu_master, master_gflagfile
 
 
 class Master(Script):
@@ -54,7 +53,7 @@ class Master(Script):
             raise ef
 
     def configure(self, env):
-
+        from params import kudu_master, master_gflagfile
         key_val_template = '{0}={1}\n'
         export_kv_tmpl = 'export {0}={1}\n'
 
