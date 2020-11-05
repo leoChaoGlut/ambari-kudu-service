@@ -18,6 +18,7 @@ from resource_management.core.resources.system import Execute
 from resource_management.libraries.script.script import Script
 
 from common import kuduHome, KUDU_RPM, KUDU_MASTER_RPM
+from params import kudu_master, master_gflagfile
 
 
 class Master(Script):
@@ -25,6 +26,8 @@ class Master(Script):
         kuduTmpDir = '/tmp/kudu'
         kuduRpmPath = kuduTmpDir + '/kudu.rpm'
         kuduMasterRpmPath = kuduTmpDir + '/kudu-master.rpm'
+
+        Execute('yum install -y cyrus-sasl-plain lsb')
 
         Execute('mkdir -p {0}'.format(kuduHome))
         Execute('mkdir -p {0}'.format(kuduTmpDir))
@@ -51,7 +54,7 @@ class Master(Script):
             raise ef
 
     def configure(self, env):
-        from params import kudu_master, master_gflagfile
+
         key_val_template = '{0}={1}\n'
         export_kv_tmpl = 'export {0}={1}\n'
 
@@ -65,15 +68,18 @@ class Master(Script):
         Execute('mkdir -p {0}'.format(metaDir))
         Execute('mkdir -p {0}'.format(logDir))
 
-        Execute('chown kudu:kudu {0}'.format(walDir))
-        Execute('chown kudu:kudu {0}'.format(dataDirs))
-        Execute('chown kudu:kudu {0}'.format(metaDir))
-        Execute('chown kudu:kudu {0}'.format(logDir))
-        Execute('chown kudu:kudu {0}'.format(kuduHome))
+        Execute('chown -R kudu:kudu {0}'.format(walDir))
+        Execute('chown -R kudu:kudu {0}'.format(dataDirs))
+        Execute('chown -R kudu:kudu {0}'.format(metaDir))
+        Execute('chown -R kudu:kudu {0}'.format(logDir))
+        Execute('chown -R kudu:kudu {0}'.format(kuduHome))
 
         with open('/etc/kudu/conf/master.gflagfile', 'w') as f:
+            if master_gflagfile.has_key('content'):
+                f.write(str(master_gflagfile['content']))
             for key, value in master_gflagfile.iteritems():
-                f.write(key_val_template.format(key, value))
+                if key != 'content':
+                    f.write(key_val_template.format(key, value))
 
         with open('/etc/default/kudu-master', 'w') as f:
             for key, value in kudu_master.iteritems():

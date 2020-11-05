@@ -22,14 +22,6 @@
 <configuration>
 
     <property>
-        <name>--fromenv</name>
-        <value>rpc_bind_addresses</value>
-    </property>
-    <property>
-        <name>--fromenv</name>
-        <value>log_dir</value>
-    </property>
-    <property>
         <name>--fs_wal_dir</name>
         <value>/data/kudu/data/master/wal</value>
     </property>
@@ -45,5 +37,22 @@
         <name>--master_addresses</name>
         <value></value>
     </property>
+
+    <property>
+        <name>content</name>
+        <display-name>master.gflagfile</display-name>
+        <value>
+            # Do not modify these two lines. If you wish to change these variables,
+            # modify them in /etc/default/kudu-master.
+            --fromenv=rpc_bind_addresses
+            --fromenv=log_dir
+        </value>
+        <value-attributes>
+            <type>content</type>
+            <show-property-name>false</show-property-name>
+        </value-attributes>
+        <on-ambari-upgrade add="true"/>
+    </property>
+
 
 </configuration>

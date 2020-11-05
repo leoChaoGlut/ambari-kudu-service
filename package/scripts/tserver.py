@@ -17,6 +17,7 @@ from resource_management.core.resources.system import Execute
 from resource_management.libraries.script.script import Script
 
 from common import kuduHome, KUDU_RPM, KUDU_TSERVER_RPM
+from params import kudu_tserver, tserver_gflagfile
 
 
 class Tserver(Script):
@@ -24,6 +25,8 @@ class Tserver(Script):
         kuduTmpDir = '/tmp/kudu'
         kuduRpmPath = kuduTmpDir + '/kudu.rpm'
         kuduTserverRpmPath = kuduTmpDir + '/kudu-tserver.rpm'
+
+        Execute('yum install -y cyrus-sasl-plain lsb')
 
         Execute('mkdir -p {0}'.format(kuduHome))
         Execute('mkdir -p {0}'.format(kuduTmpDir))
@@ -53,7 +56,6 @@ class Tserver(Script):
                 raise ef
 
     def configure(self, env):
-        from params import kudu_tserver, tserver_gflagfile
         key_val_template = '{0}={1}\n'
         export_kv_tmpl = 'export {0}={1}\n'
 
@@ -67,15 +69,18 @@ class Tserver(Script):
         Execute('mkdir -p {0}'.format(metaDir))
         Execute('mkdir -p {0}'.format(logDir))
 
-        Execute('chown kudu:kudu {0}'.format(walDir))
-        Execute('chown kudu:kudu {0}'.format(dataDirs))
-        Execute('chown kudu:kudu {0}'.format(metaDir))
-        Execute('chown kudu:kudu {0}'.format(logDir))
-        Execute('chown kudu:kudu {0}'.format(kuduHome))
+        Execute('chown -R kudu:kudu {0}'.format(walDir))
+        Execute('chown -R kudu:kudu {0}'.format(dataDirs))
+        Execute('chown -R kudu:kudu {0}'.format(metaDir))
+        Execute('chown -R kudu:kudu {0}'.format(logDir))
+        Execute('chown -R kudu:kudu {0}'.format(kuduHome))
 
         with open('/etc/kudu/conf/tserver.gflagfile', 'w') as f:
+            if tserver_gflagfile.has_key('content'):
+                f.write(str(tserver_gflagfile['content']))
             for key, value in tserver_gflagfile.iteritems():
-                f.write(key_val_template.format(key, value))
+                if key != 'content':
+                    f.write(key_val_template.format(key, value))
 
         with open('/etc/default/kudu-tserver', 'w') as f:
             for key, value in kudu_tserver.iteritems():
