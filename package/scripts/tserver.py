@@ -77,7 +77,7 @@ class Tserver(Script):
 
         with open('/etc/kudu/conf/tserver.gflagfile', 'w') as f:
             if tserver_gflagfile.has_key('content'):
-                f.write(str(tserver_gflagfile['content']))
+                f.write(str(tserver_gflagfile['content']) + '\n')
             for key, value in tserver_gflagfile.iteritems():
                 if key != 'content':
                     f.write(key_val_template.format(key, value))

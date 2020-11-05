@@ -75,7 +75,7 @@ class Master(Script):
 
         with open('/etc/kudu/conf/master.gflagfile', 'w') as f:
             if master_gflagfile.has_key('content'):
-                f.write(str(master_gflagfile['content']))
+                f.write(str(master_gflagfile['content']) + '\n')
             for key, value in master_gflagfile.iteritems():
                 if key != 'content':
                     f.write(key_val_template.format(key, value))
