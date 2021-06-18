@@ -13,7 +13,7 @@
 # limitations under the License.
 
 
-from resource_management.core.exceptions import ExecutionFailed
+from resource_management.core.exceptions import ExecutionFailed, ComponentIsNotRunning
 from resource_management.core.resources.system import Execute
 from resource_management.libraries.script.script import Script
 
@@ -27,6 +27,8 @@ class Master(Script):
         Execute('mkdir -p {0}'.format(kuduHome))
 
         Execute('wget --no-check-certificate {0} -O {1}'.format(kuduCliUrl, kuduCli))
+
+        Execute('chmod +x ' + kuduCli)
 
         self.configure(env)
 

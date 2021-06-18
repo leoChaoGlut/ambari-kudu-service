@@ -27,6 +27,8 @@ class Tserver(Script):
 
         Execute('wget --no-check-certificate {0} -O {1}'.format(kuduCliUrl, kuduCli))
 
+        Execute('chmod +x ' + kuduCli)
+
         self.configure(env)
 
     def stop(self, env):

@@ -15,3 +15,4 @@ mkdir -p /tmp/kudu/tserver/wal
 
 
 
+export KUDU_TSERVER_COUNT=`ps -ef |grep -v grep |grep "/data/ tserver run" | wc -l && `if [ $KUDU_TSERVER_COUNT -ne 0 ];then exit 0;else exit 3;fi ` '
