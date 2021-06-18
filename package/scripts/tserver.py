@@ -34,16 +34,16 @@ class Tserver(Script):
 
     def start(self, env):
         self.configure(self)
-        from params import kuduMasterConfig
+        from params import kuduTserverConfig
 
         Execute(
             "nohup " + kuduCli + " tserver run -tserver_master_addrs={0} -fs_wal_dir={1} -fs_data_dirs={2} "
                                  "-fs_metadata_dir={3} -log_dir={4} > master.out 2>&1 &".format(
-                kuduMasterConfig['tserver_master_addrs'],
-                kuduMasterConfig['fs_wal_dir'],
-                kuduMasterConfig['fs_data_dirs'],
-                kuduMasterConfig['fs_metadata_dir'],
-                kuduMasterConfig['log_dir'],
+                kuduTserverConfig['tserver_master_addrs'],
+                kuduTserverConfig['fs_wal_dir'],
+                kuduTserverConfig['fs_data_dirs'],
+                kuduTserverConfig['fs_metadata_dir'],
+                kuduTserverConfig['log_dir'],
             )
         )
 
@@ -60,12 +60,12 @@ class Tserver(Script):
                 raise ef
 
     def configure(self, env):
-        from params import kuduMasterConfig
+        from params import kuduTserverConfig
 
-        Execute('mkdir -p {0}'.format(kuduMasterConfig['fs_wal_dir']))
-        Execute('mkdir -p {0}'.format(kuduMasterConfig['fs_data_dirs']))
-        Execute('mkdir -p {0}'.format(kuduMasterConfig['fs_metadata_dir']))
-        Execute('mkdir -p {0}'.format(kuduMasterConfig['log_dir']))
+        Execute('mkdir -p {0}'.format(kuduTserverConfig['fs_wal_dir']))
+        Execute('mkdir -p {0}'.format(kuduTserverConfig['fs_data_dirs']))
+        Execute('mkdir -p {0}'.format(kuduTserverConfig['fs_metadata_dir']))
+        Execute('mkdir -p {0}'.format(kuduTserverConfig['log_dir']))
 
 
 if __name__ == '__main__':
