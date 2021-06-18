@@ -20,12 +20,29 @@
  */
 -->
 <configuration>
-    <property>
-        <name>FLAGS_log_dir</name>
-        <value>/var/log/kudu</value>
+
+    <property require-input="true">
+        <name>master_addresses</name>
+        <value></value>
+        <description>
+            For example: master1:7051,master2:7051,master3:7051
+        </description>
     </property>
-    <property>
-        <name>FLAGS_rpc_bind_addresses</name>
-        <value>0.0.0.0:7051</value>
+    <property require-input="true">
+        <name>fs_wal_dir</name>
+        <value>/data/kudu/master/wal</value>
     </property>
+    <property require-input="true">
+        <name>fs_data_dirs</name>
+        <value>/data/kudu/master/data</value>
+    </property>
+    <property require-input="true">
+        <name>fs_metadata_dir</name>
+        <value>/data/kudu/master/metadata</value>
+    </property>
+    <property require-input="true">
+        <name>log_dir</name>
+        <value>/data/kudu/master/log</value>
+    </property>
+
 </configuration>

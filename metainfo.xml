@@ -20,12 +20,11 @@
         <service>
             <name>KUDU</name>
             <displayName>Kudu</displayName>
-            <comment></comment>
-            <version>1.10.0</version>
+            <version>1.14.0</version>
             <components>
                 <component>
                     <name>KUDU_MASTER</name>
-                    <displayName>Kudu Master</displayName>
+                    <displayName>KUDU_MASTER</displayName>
                     <category>MASTER</category>
                     <cardinality>1+</cardinality>
                     <versionAdvertised>true</versionAdvertised>
@@ -39,7 +38,7 @@
 
                 <component>
                     <name>KUDU_TSERVER</name>
-                    <displayName>Kudu Tserver</displayName>
+                    <displayName>KUDU_TSERVER</displayName>
                     <category>SLAVE</category>
                     <cardinality>1+</cardinality>
                     <versionAdvertised>true</versionAdvertised>
@@ -52,8 +51,6 @@
             </components>
 
             <configuration-dependencies>
-                <config-type>master.gflagfile</config-type>
-                <config-type>tserver.gflagfile</config-type>
                 <config-type>kudu-master</config-type>
                 <config-type>kudu-tserver</config-type>
             </configuration-dependencies>

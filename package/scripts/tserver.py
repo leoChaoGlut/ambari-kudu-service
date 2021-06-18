@@ -16,38 +16,43 @@ from resource_management.core.exceptions import ExecutionFailed, ComponentIsNotR
 from resource_management.core.resources.system import Execute
 from resource_management.libraries.script.script import Script
 
-from common import kuduHome, KUDU_RPM, KUDU_TSERVER_RPM
+from common import kuduHome, kuduCliUrl, kuduCli
 
 
 class Tserver(Script):
     def install(self, env):
-        kuduTmpDir = '/tmp/kudu'
-        kuduRpmPath = kuduTmpDir + '/kudu.rpm'
-        kuduTserverRpmPath = kuduTmpDir + '/kudu-tserver.rpm'
-
-        Execute('yum install -y cyrus-sasl-plain lsb')
+        Execute('yum install -y cyrus-sasl-plain')
 
         Execute('mkdir -p {0}'.format(kuduHome))
-        Execute('mkdir -p {0}'.format(kuduTmpDir))
 
-        Execute('wget --no-check-certificate {0} -O {1}'.format(KUDU_RPM, kuduRpmPath))
-        Execute('wget --no-check-certificate {0} -O {1}'.format(KUDU_TSERVER_RPM, kuduTserverRpmPath))
-
-        Execute('rpm -ivh --force {0}'.format(kuduRpmPath))
-        Execute('rpm -ivh --force {0}'.format(kuduTserverRpmPath))
+        Execute('wget --no-check-certificate {0} -O {1}'.format(kuduCliUrl, kuduCli))
 
         self.configure(env)
 
     def stop(self, env):
-        Execute('service kudu-tserver stop')
+        Execute("ps -ef |grep '" + kuduCli + " tserver run'|grep -v grep|awk '{print $2}'|xargs kill -9")
 
     def start(self, env):
         self.configure(self)
-        Execute('service kudu-tserver start')
+        from params import kuduMasterConfig
+
+        Execute(
+            "nohup " + kuduCli + " tserver run -tserver_master_addrs={0} -fs_wal_dir={1} -fs_data_dirs={2} "
+                                 "-fs_metadata_dir={3} -log_dir={4} > master.out 2>&1 &".format(
+                kuduMasterConfig['tserver_master_addrs'],
+                kuduMasterConfig['fs_wal_dir'],
+                kuduMasterConfig['fs_data_dirs'],
+                kuduMasterConfig['fs_metadata_dir'],
+                kuduMasterConfig['log_dir'],
+            )
+        )
 
     def status(self, env):
         try:
-            Execute('service kudu-tserver status')
+            Execute(
+                'export KUDU_TSERVER_COUNT=`ps -ef |grep -v grep |grep "' + kuduCli + ' tserver run" | wc -l` '
+                                                                                      '&& `if [ $KUDU_TSERVER_COUNT -ne 0 ];then exit 0;else exit 3;fi ` '
+            )
         except ExecutionFailed as ef:
             if ef.code == 3:
                 raise ComponentIsNotRunning("ComponentIsNotRunning")
@@ -55,36 +60,12 @@ class Tserver(Script):
                 raise ef
 
     def configure(self, env):
-        from params import kudu_tserver, tserver_gflagfile
-        key_val_template = '{0}={1}\n'
-        export_kv_tmpl = 'export {0}={1}\n'
+        from params import kuduMasterConfig
 
-        walDir = tserver_gflagfile['--fs_wal_dir']
-        dataDirs = tserver_gflagfile['--fs_data_dirs']
-        metaDir = tserver_gflagfile['--fs_metadata_dir']
-        logDir = kudu_tserver['FLAGS_log_dir']
-
-        Execute('mkdir -p {0}'.format(walDir))
-        Execute('mkdir -p {0}'.format(dataDirs))
-        Execute('mkdir -p {0}'.format(metaDir))
-        Execute('mkdir -p {0}'.format(logDir))
-
-        Execute('chown -R kudu:kudu {0}'.format(walDir))
-        Execute('chown -R kudu:kudu {0}'.format(dataDirs))
-        Execute('chown -R kudu:kudu {0}'.format(metaDir))
-        Execute('chown -R kudu:kudu {0}'.format(logDir))
-        Execute('chown -R kudu:kudu {0}'.format(kuduHome))
-
-        with open('/etc/kudu/conf/tserver.gflagfile', 'w') as f:
-            if tserver_gflagfile.has_key('content'):
-                f.write(str(tserver_gflagfile['content']) + '\n')
-            for key, value in tserver_gflagfile.iteritems():
-                if key != 'content':
-                    f.write(key_val_template.format(key, value))
-
-        with open('/etc/default/kudu-tserver', 'w') as f:
-            for key, value in kudu_tserver.iteritems():
-                f.write(export_kv_tmpl.format(key, value))
+        Execute('mkdir -p {0}'.format(kuduMasterConfig['fs_wal_dir']))
+        Execute('mkdir -p {0}'.format(kuduMasterConfig['fs_data_dirs']))
+        Execute('mkdir -p {0}'.format(kuduMasterConfig['fs_metadata_dir']))
+        Execute('mkdir -p {0}'.format(kuduMasterConfig['log_dir']))
 
 
 if __name__ == '__main__':
