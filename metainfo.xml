@@ -20,7 +20,7 @@
         <service>
             <name>KUDU</name>
             <displayName>KUDU</displayName>
-            <version>1.14.0</version>
+            <version>1.15.0</version>
             <components>
                 <component>
                     <name>KUDU_MASTER</name>
