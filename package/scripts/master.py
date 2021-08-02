@@ -40,6 +40,7 @@ class Master(Script):
         from params import kuduMasterConfig
 
         Execute(
+            "cd "+kuduHome +" && "
             "nohup " + kuduCli + " master run -master_addresses={0} -fs_wal_dir={1} -fs_data_dirs={2} "
                                  "-fs_metadata_dir={3} -log_dir={4} > master.out 2>&1 &".format(
                 kuduMasterConfig['master_addresses'],

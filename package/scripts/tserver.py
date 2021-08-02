@@ -39,8 +39,9 @@ class Tserver(Script):
         from params import kuduTserverConfig
 
         Execute(
+            "cd "+kuduHome +" && "
             "nohup " + kuduCli + " tserver run -tserver_master_addrs={0} -fs_wal_dir={1} -fs_data_dirs={2} "
-                                 "-fs_metadata_dir={3} -log_dir={4} > master.out 2>&1 &".format(
+                                 "-fs_metadata_dir={3} -log_dir={4} > tserver.out 2>&1 &".format(
                 kuduTserverConfig['tserver_master_addrs'],
                 kuduTserverConfig['fs_wal_dir'],
                 kuduTserverConfig['fs_data_dirs'],
