@@ -17,7 +17,7 @@ from resource_management.core.exceptions import ExecutionFailed, ComponentIsNotR
 from resource_management.core.resources.system import Execute
 from resource_management.libraries.script.script import Script
 
-from common import kuduHome, kuduCliUrl, kuduCli
+from common import kuduHome, kuduCliUrl, kuduCli, kuduFeHome, kuduFeTarName, kuduFeUrl
 
 
 class Master(Script):
@@ -27,6 +27,11 @@ class Master(Script):
         Execute('mkdir -p {0}'.format(kuduHome))
 
         Execute('wget --no-check-certificate {0} -O {1}'.format(kuduCliUrl, kuduCli))
+
+        tmpKuduFeTarPath = '/tmp/' + kuduFeTarName
+        Execute('mkdir -p {0}'.format(kuduFeHome))
+        Execute('wget --no-check-certificate {0} -O {1}'.format(kuduFeUrl, tmpKuduFeTarPath))
+        Execute('tar -xf {0} -C {1} --strip-components=1'.format(tmpKuduFeTarPath, kuduFeHome))
 
         Execute('chmod +x ' + kuduCli)
 
@@ -42,6 +47,8 @@ class Master(Script):
         config = ''
         for key, value in kuduMasterConfig.iteritems():
             config += "-" + key + "=" + value
+
+        config += "-webserver_doc_root=" + kuduFeHome
 
         Execute(
             "cd " + kuduHome + " && "

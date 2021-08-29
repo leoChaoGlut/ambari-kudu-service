@@ -20,9 +20,13 @@ config = ConfigParser.ConfigParser()
 config.readfp(open(os.path.join(script_dir, 'download.ini')))
 
 kuduCliUrl = config.get('download', 'kudu_cli_url')
+kuduFeUrl = config.get('download', 'kudu_fe_url')
+kuduFeTarName = kuduFeUrl.split('/')[-1]
+
 kuduHome = '/home/service/var/data1/kudu'
 kuduCliName = 'kudu-cli'
 kuduCli = kuduHome + '/' + kuduCliName
+kuduFeHome = kuduHome + '/fe'
 
 packageDir = os.path.dirname(script_dir)
 serviceDir = os.path.dirname(packageDir)
