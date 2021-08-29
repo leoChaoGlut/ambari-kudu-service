@@ -38,17 +38,27 @@ class Tserver(Script):
         self.configure(self)
         from params import kuduTserverConfig
 
+        config = ''
+        for key, value in kuduTserverConfig.iteritems():
+            config += "-" + key + "=" + value
+
         Execute(
-            "cd "+kuduHome +" && "
-            "nohup " + kuduCli + " tserver run -tserver_master_addrs={0} -fs_wal_dir={1} -fs_data_dirs={2} "
-                                 "-fs_metadata_dir={3} -log_dir={4} > tserver.out 2>&1 &".format(
-                kuduTserverConfig['tserver_master_addrs'],
-                kuduTserverConfig['fs_wal_dir'],
-                kuduTserverConfig['fs_data_dirs'],
-                kuduTserverConfig['fs_metadata_dir'],
-                kuduTserverConfig['log_dir'],
-            )
+            "cd " + kuduHome + " && "
+                               "nohup " + kuduCli + " tserver run " + config + " > tserver.out 2>&1 &"
         )
+
+
+        # Execute(
+        #     "cd "+kuduHome +" && "
+        #     "nohup " + kuduCli + " tserver run -tserver_master_addrs={0} -fs_wal_dir={1} -fs_data_dirs={2} "
+        #                          "-fs_metadata_dir={3} -log_dir={4} > tserver.out 2>&1 &".format(
+        #         kuduTserverConfig['tserver_master_addrs'],
+        #         kuduTserverConfig['fs_wal_dir'],
+        #         kuduTserverConfig['fs_data_dirs'],
+        #         kuduTserverConfig['fs_metadata_dir'],
+        #         kuduTserverConfig['log_dir'],
+        #     )
+        # )
 
     def status(self, env):
         try:

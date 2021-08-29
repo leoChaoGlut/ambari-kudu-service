@@ -39,17 +39,25 @@ class Master(Script):
         self.configure(self)
         from params import kuduMasterConfig
 
+        config = ''
+        for key, value in kuduMasterConfig.iteritems():
+            config += "-" + key + "=" + value
+
         Execute(
-            "cd "+kuduHome +" && "
-            "nohup " + kuduCli + " master run -master_addresses={0} -fs_wal_dir={1} -fs_data_dirs={2} "
-                                 "-fs_metadata_dir={3} -log_dir={4} > master.out 2>&1 &".format(
-                kuduMasterConfig['master_addresses'],
-                kuduMasterConfig['fs_wal_dir'],
-                kuduMasterConfig['fs_data_dirs'],
-                kuduMasterConfig['fs_metadata_dir'],
-                kuduMasterConfig['log_dir'],
-            )
+            "cd " + kuduHome + " && "
+                               "nohup " + kuduCli + " master run " + config + " > master.out 2>&1 &"
         )
+        # Execute(
+        #     "cd "+kuduHome +" && "
+        #     "nohup " + kuduCli + " master run -master_addresses={0} -fs_wal_dir={1} -fs_data_dirs={2} "
+        #                          "-fs_metadata_dir={3} -log_dir={4} > master.out 2>&1 &".format(
+        #         kuduMasterConfig['master_addresses'],
+        #         kuduMasterConfig['fs_wal_dir'],
+        #         kuduMasterConfig['fs_data_dirs'],
+        #         kuduMasterConfig['fs_metadata_dir'],
+        #         kuduMasterConfig['log_dir'],
+        #     )
+        # )
 
     def status(self, env):
         try:
