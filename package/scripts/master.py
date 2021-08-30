@@ -46,9 +46,9 @@ class Master(Script):
 
         config = ''
         for key, value in kuduMasterConfig.iteritems():
-            config += "-" + key + "=" + value
+            config += "-" + key + "=" + value + " "
 
-        config += "-webserver_doc_root=" + kuduFeHome
+        config += "-webserver_doc_root=" + kuduFeHome + " "
 
         Execute(
             "cd " + kuduHome + " && "

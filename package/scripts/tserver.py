@@ -45,15 +45,14 @@ class Tserver(Script):
 
         config = ''
         for key, value in kuduTserverConfig.iteritems():
-            config += "-" + key + "=" + value
+            config += "-" + key + "=" + value + " "
 
-        config += "-webserver_doc_root=" + kuduFeHome
+        config += "-webserver_doc_root=" + kuduFeHome + " "
 
         Execute(
             "cd " + kuduHome + " && "
                                "nohup " + kuduCli + " tserver run " + config + " > tserver.out 2>&1 &"
         )
-
 
         # Execute(
         #     "cd "+kuduHome +" && "
